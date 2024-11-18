@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
         // jump allowed if player on ground 
         if (controller.isGrounded)
         {
+            moveDirection.y = 0f;
+
             if (Input.GetButtonDown("Jump"))
             {
                 moveDirection.y = jumpForce;

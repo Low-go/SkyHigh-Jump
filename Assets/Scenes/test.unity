@@ -789,6 +789,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 496911375}
   offSet: {x: 0, y: 0, z: 0}
+  useOffsetValues: 0
+  rotateSpeed: 5
 --- !u!1 &1102897708
 GameObject:
   m_ObjectHideFlags: 0

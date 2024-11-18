@@ -435,7 +435,7 @@ Transform:
   m_GameObject: {fileID: 496911370}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -23.4, y: 1.27, z: 7.4}
+  m_LocalPosition: {x: -23.4, y: 1.1, z: 7.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -769,10 +769,11 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.09088488, y: -0, z: -0, w: 0.9958614}
-  m_LocalPosition: {x: -23.1, y: 5.7, z: -2.4}
+  m_LocalPosition: {x: -23.1, y: 4.2, z: -0.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1359068060}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 10.429, y: 0, z: 0}
 --- !u!114 &963194229
@@ -790,7 +791,8 @@ MonoBehaviour:
   target: {fileID: 496911375}
   offSet: {x: 0, y: 0, z: 0}
   useOffsetValues: 0
-  rotateSpeed: 5
+  rotateSpeed: 3
+  pivet: {fileID: 1359068060}
 --- !u!1 &1102897708
 GameObject:
   m_ObjectHideFlags: 0
@@ -1001,6 +1003,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1359068059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1359068060}
+  m_Layer: 0
+  m_Name: Pivet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1359068060
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359068059}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 963194228}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1381098843
 GameObject:

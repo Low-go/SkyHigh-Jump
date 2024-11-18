@@ -793,6 +793,9 @@ MonoBehaviour:
   useOffsetValues: 0
   rotateSpeed: 3
   pivet: {fileID: 1359068060}
+  maxViewAngle: 45
+  minViewAngle: -315
+  invertY: 0
 --- !u!1 &1102897708
 GameObject:
   m_ObjectHideFlags: 0

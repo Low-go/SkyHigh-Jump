@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float jumpForce;
     public CharacterController controller;
+    public Animator anim;
 
     private Vector3 moveDirection;
     public float gravityScale;
@@ -41,5 +42,7 @@ public class PlayerController : MonoBehaviour
 
         moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale * Time.deltaTime); // this is to add gravity after a jump
         controller.Move(moveDirection * Time.deltaTime);
+        anim.SetBool("isGrounded", controller.isGrounded);
+        anim.SetFloat("Speed", (Mathf.Abs(Input.GetAxis("Vertical")) + Mathf.Abs(Input.GetAxis("Horizontal"))));
     }
 }

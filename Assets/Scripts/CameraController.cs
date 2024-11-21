@@ -22,16 +22,20 @@ public class CameraController : MonoBehaviour
         }
 
         pivet.transform.position = target.transform.position;
-        pivet.transform.parent = target.transform;
+        //pivet.transform.parent = target.transform;
+        pivet.transform.parent = null;
+
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
+        pivet.transform.position = target.transform.position;
+
         // get the x position of the mouse and rotate the target
         float horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
-        target.Rotate(0, horizontal, 0);
+        pivet.Rotate(0, horizontal, 0);
 
         // Get the Y position of the mouse and rotate the Pivot
         float vertical = Input.GetAxis("Mouse Y") * rotateSpeed;
@@ -56,7 +60,7 @@ public class CameraController : MonoBehaviour
         }
 
         // move the camera based on the current rotation of the target and the original offset
-        float desiredYAngle = target.eulerAngles.y;
+        float desiredYAngle = pivet.eulerAngles.y;
         float desiredXAngle = pivet.eulerAngles.x;
 
         Quaternion rotation = Quaternion.Euler(desiredXAngle, desiredYAngle, 0);

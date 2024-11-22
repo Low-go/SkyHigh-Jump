@@ -6,6 +6,8 @@ public class GoldPickup : MonoBehaviour
 {
 
     public int value;
+
+    public GameObject pickupEffect;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +25,9 @@ public class GoldPickup : MonoBehaviour
         if (other.tag == "Player")
         {
             FindObjectOfType<GameManager>().AddGold(value);
+
+            Instantiate(pickupEffect, transform.position, transform.rotation); // particle effect
+
             Destroy(gameObject);
         }
     }

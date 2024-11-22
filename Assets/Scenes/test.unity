@@ -725,6 +725,8 @@ MonoBehaviour:
   pivet: {fileID: 1359068060}
   rotateSpeed: 25
   playerModel: {fileID: 1405476522}
+  knockBackForce: 16
+  knockBackTime: 0.25
 --- !u!143 &496911378
 CharacterController:
   m_ObjectHideFlags: 0
@@ -963,6 +965,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 5
   currentHealth: 0
+  thePlayer: {fileID: 0}
 --- !u!1 &821903875
 GameObject:
   m_ObjectHideFlags: 0

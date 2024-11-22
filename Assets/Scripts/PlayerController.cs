@@ -17,6 +17,10 @@ public class PlayerController : MonoBehaviour
     public float rotateSpeed;
     public GameObject playerModel;
 
+    public float knockBackForce;
+    public float knockBackTime;
+    private float knockBackCounter;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,20 +31,29 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         //moveDirection = new Vector3(Input.GetAxis("Horizontal") * moveSpeed, moveDirection.y, Input.GetAxis("Vertical") * moveSpeed);
-        float yStore = moveDirection.y; // this shuld fix the jumping issues
-        moveDirection = (transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"));
-        moveDirection = moveDirection.normalized * moveSpeed;
-        moveDirection.y = yStore;
 
-        // jump allowed if player on ground 
-        if (controller.isGrounded)
+        if (knockBackCounter <= 0) // only move if not knocked back
         {
-            moveDirection.y = 0f;
+            float yStore = moveDirection.y; // this shuld fix the jumping issues
+            moveDirection = (transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"));
+            moveDirection = moveDirection.normalized * moveSpeed;
+            moveDirection.y = yStore;
 
-            if (Input.GetButtonDown("Jump"))
+            // jump allowed if player on ground 
+            if (controller.isGrounded)
             {
-                moveDirection.y = jumpForce;
+                moveDirection.y = 0f;
+
+                if (Input.GetButtonDown("Jump"))
+                {
+                    moveDirection.y = jumpForce;
+                }
             }
+        }
+        //lower knockbackCounter 
+        else
+        {
+            knockBackCounter -= Time.deltaTime;
         }
 
 
@@ -57,5 +70,15 @@ public class PlayerController : MonoBehaviour
 
         anim.SetBool("isGrounded", controller.isGrounded);
         anim.SetFloat("Speed", (Mathf.Abs(Input.GetAxis("Vertical")) + Mathf.Abs(Input.GetAxis("Horizontal"))));
+    }
+
+    public void knockBack(Vector3 direction)
+    {
+        knockBackCounter = knockBackTime;
+
+
+
+        moveDirection = direction * knockBackForce;
+        moveDirection.y = knockBackForce;
     }
 }

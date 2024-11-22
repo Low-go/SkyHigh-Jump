@@ -23,8 +23,9 @@ public class HurtPlayer : MonoBehaviour
     {
         if(other.gameObject.tag == "Player")
         {
-            Debug.Log("player touched");
-            FindObjectOfType<HealthManager>().hurtPlayer(damageToGive);
+            Vector3 hitDirection = other.transform.position - transform.position;
+            hitDirection = hitDirection.normalized;
+            FindObjectOfType<HealthManager>().hurtPlayer(damageToGive, hitDirection);
         }
     }
 }

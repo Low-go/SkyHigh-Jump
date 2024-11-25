@@ -70,3 +70,20 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+Assets/3D Enivronment Assets.meta
+Assets/3D Enivronment Assets/
+Assets/BOXOPHOBIC+.meta
+Assets/BOXOPHOBIC+/
+Assets/BOXOPHOBIC.meta
+Assets/BOXOPHOBIC/
+Assets/CartoonEnvironment.meta
+Assets/CartoonEnvironment/
+Assets/Models/FBX format.meta
+Assets/Models/FBX format/
+Assets/Models/GLB format.meta
+Assets/Models/GLB format/
+Assets/Models/OBJ format.meta
+Assets/Models/OBJ format/
+Assets/Models/Textures.meta
+Assets/Models/Textures/

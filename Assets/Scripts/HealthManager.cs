@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthManager : MonoBehaviour
 {
@@ -19,7 +20,15 @@ public class HealthManager : MonoBehaviour
     private bool isRespawning;
     private Vector3 respawnPoint;
     public float respawnLength;
-   
+
+    // death variables
+    public GameObject deathEffect;
+    public Image blackScreen;
+    private bool isFadeToBlack;
+    private bool isFadeFromBlack;
+    public float fadeSpeed;
+    public float waitForFade;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -97,6 +106,8 @@ public class HealthManager : MonoBehaviour
     {
         isRespawning = true;
         thePlayer.gameObject.SetActive(false);
+        Instantiate(deathEffect, thePlayer.transform.position, thePlayer.transform.rotation);
+
         yield return new WaitForSeconds(respawnLength);
         isRespawning = false;
 

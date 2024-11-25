@@ -18,6 +18,7 @@ public class HealthManager : MonoBehaviour
     //respawn values, take not for future
     private bool isRespawning;
     private Vector3 respawnPoint;
+    public float respawnLength;
    
     // Start is called before the first frame update
     void Start()
@@ -85,6 +86,21 @@ public class HealthManager : MonoBehaviour
 
     public void Respawn()
     {
+
+        if (!isRespawning)
+        {
+            StartCoroutine("RespawnCo");
+        }
+    }
+
+    public IEnumerator RespawnCo()
+    {
+        isRespawning = true;
+        thePlayer.gameObject.SetActive(false);
+        yield return new WaitForSeconds(respawnLength);
+        isRespawning = false;
+
+        thePlayer.gameObject.SetActive(true);
         CharacterController charController = thePlayer.GetComponent<CharacterController>();
 
         // Disable controller, move player, then re-enable
@@ -94,6 +110,15 @@ public class HealthManager : MonoBehaviour
 
         // Reset health
         currentHealth = maxHealth;
+
+
+        invincibilityCounter = invincibilityLength;
+
+        playerRenderer.enabled = false;
+        flashCounter = flashLength;
+
+
+
     }
 
     public void healPlayer(int healAmount)

@@ -365,6 +365,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!137 &330252666 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7205140776170859923, guid: 8a6a0d96e0e34ba44a56ac1f1b4ee678, type: 3}
+  m_PrefabInstance: {fileID: 1753152883}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &411926361
 GameObject:
   m_ObjectHideFlags: 0
@@ -963,9 +968,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbad6899faba27e4a9a223e3f4872aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 5
+  maxHealth: 2
   currentHealth: 0
-  thePlayer: {fileID: 0}
+  thePlayer: {fileID: 496911377}
+  invincibilityLength: 2
+  playerRenderer: {fileID: 330252666}
+  flashCounter: 0
+  flashLength: 0.1
 --- !u!1 &821903875
 GameObject:
   m_ObjectHideFlags: 0

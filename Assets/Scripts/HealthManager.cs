@@ -72,6 +72,7 @@ public class HealthManager : MonoBehaviour
             // do i really want this? respawn
             if(currentHealth <= 0)
             {
+                FindObjectOfType<GameManager>().addRedo();
                 Respawn();
             }
             else

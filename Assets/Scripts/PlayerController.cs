@@ -21,10 +21,13 @@ public class PlayerController : MonoBehaviour
     public float knockBackTime;
     private float knockBackCounter;
 
+    private int jumpCount;
+
     // Start is called before the first frame update
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        jumpCount = 2;
     }
 
     // Update is called once per frame
@@ -42,11 +45,21 @@ public class PlayerController : MonoBehaviour
             // jump allowed if player on ground 
             if (controller.isGrounded)
             {
+                jumpCount = 2; // reset jumpcounter
                 moveDirection.y = 0f;
 
                 if (Input.GetButtonDown("Jump"))
                 {
                     moveDirection.y = jumpForce;
+                    jumpCount--;
+                }
+            }
+            else
+            {
+                if(Input.GetButtonDown("Jump") && jumpCount > 0)
+                {
+                    moveDirection.y = jumpForce -3;
+                    jumpCount--;
                 }
             }
         }
@@ -68,7 +81,7 @@ public class PlayerController : MonoBehaviour
             playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
         }
 
-        anim.SetBool("isGrounded", controller.isGrounded);
+        //anim.SetBool("isGrounded", controller.isGrounded);
         anim.SetFloat("Speed", (Mathf.Abs(Input.GetAxis("Vertical")) + Mathf.Abs(Input.GetAxis("Horizontal"))));
     }
 

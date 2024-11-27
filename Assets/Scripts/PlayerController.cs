@@ -95,3 +95,6 @@ public class PlayerController : MonoBehaviour
         moveDirection.y = knockBackForce;
     }
 }
+
+//TODO fix strange slight right drift
+//TODO fix animation jump issues

@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public int startTime;
     private float remainingTime;
     private int redoAmount = 0;
+    public GameOver gameOverScreen;
 
     // Start is called before the first frame update
     void Start()
@@ -51,11 +52,18 @@ public class GameManager : MonoBehaviour
 
         //gameover function should go here
         Debug.Log("Game is over");
+        GameOver();
     }
 
     public void addRedo()
     {
         redoAmount += 1;
         redoText.text = "Redo: " + redoAmount;
+    }
+
+    public void GameOver()
+    {
+        
+        gameOverScreen.setup(currentGold, (int)remainingTime, redoAmount);
     }
 }

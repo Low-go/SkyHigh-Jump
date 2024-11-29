@@ -36,7 +36,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isGameOver) return;
+        if (isGameOver)
+        {
+            moveDirection = Vector3.zero;
+            return;
+        }
+      
         // Detect falling
         if (!controller.isGrounded && moveDirection.y < 0)
         {

@@ -11,6 +11,8 @@ public class GameOver : MonoBehaviour
     public TextMeshProUGUI goldText;
     public TextMeshProUGUI timeText;
     public TextMeshProUGUI redoText;
+    public GameObject restartButton;
+    public GameObject exitButton;
 
     void Start()
     {
@@ -30,17 +32,26 @@ public class GameOver : MonoBehaviour
         int minutes = Mathf.FloorToInt(timeLeft / 60);
         int seconds = Mathf.FloorToInt(timeLeft % 60);
         timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+
+        restartButton.SetActive(true);
+        exitButton.SetActive(true);
     }
 
     public void RestartButton()
     {
+        Debug.Log("Restart Button Pressed!");
         PlayerController playerController = FindObjectOfType<PlayerController>();
         playerController.isGameOver = false;
+
+        restartButton.SetActive(false);
+        exitButton.SetActive(false);
+
         SceneManager.LoadScene(1); // I think an index is ok
     }
 
     public void ExitButton()
     {
+        Debug.Log("Menu Button Pressed!");
         SceneManager.LoadScene(0);
     }
 }

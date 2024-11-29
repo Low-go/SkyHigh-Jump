@@ -31,6 +31,13 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+
+        PlayerController playerController = FindObjectOfType<PlayerController>();
+        if (playerController.isGameOver)
+        {
+            return; // Stop camera movement during game over
+        }
+
         pivet.transform.position = target.transform.position;
 
         // get the x position of the mouse and rotate the target

@@ -8,6 +8,8 @@ public class HealthManager : MonoBehaviour
     public int maxHealth;
     public int currentHealth;
 
+    public Image[] hearts;
+
     public PlayerController thePlayer;
     public float invincibilityLength;
     private float invincibilityCounter;
@@ -59,6 +61,18 @@ public class HealthManager : MonoBehaviour
                 playerRenderer.enabled = true;
             }
         }
+
+        for (int i = 0; i < hearts.Length; i++)
+        {
+            if(i < currentHealth)
+            {
+                hearts[i].enabled = true;
+            }
+            else
+            {
+                hearts[i].enabled = false;
+            }
+        }
     }
 
 
@@ -85,12 +99,7 @@ public class HealthManager : MonoBehaviour
                 flashCounter = flashLength;
             }
 
-            //thePlayer.knockBack(direction);
 
-            //invincibilityCounter = invincibilityLength;
-
-            //playerRenderer.enabled = false;
-            //flashCounter = flashLength;
         }
     }
 

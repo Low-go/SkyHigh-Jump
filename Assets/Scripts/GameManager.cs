@@ -63,7 +63,8 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        
+        PlayerController playerController = FindObjectOfType<PlayerController>();
+        playerController.isGameOver = true;
         gameOverScreen.setup(currentGold, (int)remainingTime, redoAmount);
     }
 }

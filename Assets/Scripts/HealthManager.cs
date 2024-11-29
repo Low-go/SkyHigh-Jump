@@ -31,6 +31,7 @@ public class HealthManager : MonoBehaviour
     public float fadeSpeed;
     public float waitForFade;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -73,6 +74,27 @@ public class HealthManager : MonoBehaviour
                 hearts[i].enabled = false;
             }
         }
+        
+        // responsible for fading black screen during respawns
+        if (isFadeToBlack)
+        {
+            blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, Mathf.MoveTowards(blackScreen.color.a, 1f, fadeSpeed * Time.deltaTime));
+            if(blackScreen.color.a == 1f)
+            {
+                isFadeToBlack = false;
+            }
+        }
+
+        if (isFadeFromBlack)
+        {
+            blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, Mathf.MoveTowards(blackScreen.color.a, 0f, fadeSpeed * Time.deltaTime));
+            if (blackScreen.color.a == 0f)
+            {
+                isFadeFromBlack = false;
+            }
+        }
+
+
     }
 
 
@@ -119,6 +141,14 @@ public class HealthManager : MonoBehaviour
         Instantiate(deathEffect, thePlayer.transform.position, thePlayer.transform.rotation);
 
         yield return new WaitForSeconds(respawnLength);
+
+        isFadeToBlack = true;
+
+        yield return new WaitForSeconds(waitForFade);
+
+        isFadeToBlack = false;
+        isFadeFromBlack = true;
+
         isRespawning = false;
 
         thePlayer.gameObject.SetActive(true);

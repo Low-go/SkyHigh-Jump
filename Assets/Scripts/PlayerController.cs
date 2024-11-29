@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     private float fallStartHeight;
     private bool isFalling;
 
+    public bool isGameOver = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +36,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isGameOver) return;
         // Detect falling
         if (!controller.isGrounded && moveDirection.y < 0)
         {

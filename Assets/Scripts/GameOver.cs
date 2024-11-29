@@ -34,6 +34,8 @@ public class GameOver : MonoBehaviour
 
     public void RestartButton()
     {
+        PlayerController playerController = FindObjectOfType<PlayerController>();
+        playerController.isGameOver = false;
         SceneManager.LoadScene(1); // I think an index is ok
     }
 

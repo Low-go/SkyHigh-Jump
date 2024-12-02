@@ -39,6 +39,7 @@ public class HealthManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        maxHealth = MainManager.Instance.playerHealth;
         currentHealth = maxHealth;
         //thePlayer = FindObjectOfType<PlayerController>();
         

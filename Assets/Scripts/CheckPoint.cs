@@ -43,7 +43,7 @@ public class CheckPoint : MonoBehaviour
     {
         if(other.tag.Equals("Player"))
         {
-            Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y + 5, transform.position.z);
+            Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y + 3, transform.position.z);
             theHealhMan.SetSpawnPoint(spawnPoint);
             CheckPointOn();
         }

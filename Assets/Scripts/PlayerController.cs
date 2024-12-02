@@ -66,6 +66,11 @@ public class PlayerController : MonoBehaviour
                     // Apply fall damage
                     Vector3 hitDirection = Vector3.down; // Fall damage comes from below
                     FindObjectOfType<HealthManager>().hurtPlayer(1, hitDirection);
+
+                    // respawn player at checkpoint
+                    //change this if adding a difficulty setting
+                    FindObjectOfType<HealthManager>().Respawn(true, false);
+                
                 }
 
                 isFalling = false;

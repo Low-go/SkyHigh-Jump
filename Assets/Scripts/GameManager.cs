@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     private int redoAmount = 0;
     public GameOver gameOverScreen;
 
+
     // Start is called before the first frame update
     void Start()
     {

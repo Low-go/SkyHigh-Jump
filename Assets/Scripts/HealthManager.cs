@@ -31,6 +31,10 @@ public class HealthManager : MonoBehaviour
     public float fadeSpeed;
     public float waitForFade;
 
+    private Vector3 restartPosition;
+
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +43,7 @@ public class HealthManager : MonoBehaviour
         //thePlayer = FindObjectOfType<PlayerController>();
         
         respawnPoint = thePlayer.transform.position;
+        restartPosition = thePlayer.transform.position;
     }
 
     // Update is called once per frame
@@ -109,7 +114,12 @@ public class HealthManager : MonoBehaviour
             if(currentHealth <= 0)
             {
                 FindObjectOfType<GameManager>().addRedo();
-                Respawn();
+                Respawn(false, true);
+                CheckPoint[] checkpoints = FindObjectsOfType<CheckPoint>();
+                foreach (CheckPoint cp in checkpoints)
+                {
+                    cp.CheckPointOff();
+                }
             }
             else
             {
@@ -125,16 +135,16 @@ public class HealthManager : MonoBehaviour
         }
     }
 
-    public void Respawn()
+    public void Respawn(bool withHealth, bool dead)
     {
 
         if (!isRespawning)
         {
-            StartCoroutine("RespawnCo");
+            StartCoroutine(RespawnCo(withHealth, dead));
         }
     }
 
-    public IEnumerator RespawnCo()
+    public IEnumerator RespawnCo(bool withHealth, bool dead)
     {
         isRespawning = true;
         thePlayer.gameObject.SetActive(false);
@@ -156,11 +166,22 @@ public class HealthManager : MonoBehaviour
 
         // Disable controller, move player, then re-enable
         charController.enabled = false;
-        thePlayer.transform.position = respawnPoint;
+        if (dead)   
+        { 
+            thePlayer.transform.position = restartPosition;
+            respawnPoint = restartPosition;
+        }
+        else
+        {
+            thePlayer.transform.position = respawnPoint;
+        }
         charController.enabled = true;
 
         // Reset health
-        currentHealth = maxHealth;
+        if (!withHealth)
+        {
+            currentHealth = maxHealth;
+        }
 
 
         invincibilityCounter = invincibilityLength;
@@ -180,5 +201,10 @@ public class HealthManager : MonoBehaviour
         {
             currentHealth = maxHealth;
         }
+    }
+
+    public void SetSpawnPoint(Vector3 newPosition)
+    {
+        respawnPoint = newPosition; // change respawn points in the world. 
     }
 }

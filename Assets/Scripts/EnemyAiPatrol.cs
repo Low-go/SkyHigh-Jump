@@ -17,6 +17,10 @@ public class EnemyAiPatrol : MonoBehaviour
     bool walkPointSet;
     [SerializeField] float range;
 
+    // state change
+    [SerializeField] float sightRange, attackRange;
+    bool playerInSight, playerInAttackRange;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +31,13 @@ public class EnemyAiPatrol : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Patrol();
+        playerInSight = Physics.CheckSphere(transform.position, sightRange, playerLayer); // if player is found here it will return true
+        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, playerLayer); // if player is found here it will return true
+
+        // function condtional upon closeness or not to player
+        if(!playerInSight && !playerInAttackRange) Patrol();
+        if (playerInSight && !playerInAttackRange) Chase();
+        if (playerInSight && playerInAttackRange) Attack();
     }
 
     void Patrol()
@@ -49,4 +59,15 @@ public class EnemyAiPatrol : MonoBehaviour
             walkPointSet = true;
         }
     }
+
+    void Chase()
+    {
+        agent.SetDestination(player.transform.position); // set the players position as the destination 
+    }
+
+    void Attack()
+    {
+        
+    }
+
 }

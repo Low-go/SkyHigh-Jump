@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour
 
     public bool isGameOver = false;
 
+    public AudioClip hurtSound;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -123,6 +125,7 @@ public class PlayerController : MonoBehaviour
     }
     public void knockBack(Vector3 direction)
     {
+        AudioSource.PlayClipAtPoint(hurtSound, transform.position);
         knockBackCounter = knockBackTime;
         moveDirection = direction * knockBackForce;
         moveDirection.y = knockBackForce;

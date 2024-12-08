@@ -205,4 +205,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 1
+  coinSound: {fileID: 8300000, guid: af84f7cc846d19747b2bfd429aad1366, type: 3}
   pickupEffect: {fileID: 3825825162678380265, guid: ac5063c609ade9c47b0d3f531384f767, type: 3}

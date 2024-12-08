@@ -96,7 +96,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 062a4de3366571a449a3b567bb7a8af7, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -683,6 +683,7 @@ MonoBehaviour:
   theRend: {fileID: 85887638}
   cpOff: {fileID: 2100000, guid: 0458d1689298ff64eb26b04db23b7862, type: 2}
   cpOn: {fileID: 2100000, guid: 005c4cc5a43c2b14f9a70b15adace551, type: 2}
+  checkSound: {fileID: 8300000, guid: 4aa1143e2ee54e048ab425832a26d68d, type: 3}
 --- !u!65 &85887637
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1900,6 +1901,7 @@ MonoBehaviour:
   knockBackTime: 0.25
   fallDamageThreshold: 13
   isGameOver: 0
+  hurtSound: {fileID: 8300000, guid: 117451c0487faa0469a14ed1eb245eb1, type: 3}
 --- !u!136 &224357651
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4236,6 +4238,7 @@ MonoBehaviour:
   theRend: {fileID: 769371062}
   cpOff: {fileID: 2100000, guid: 0458d1689298ff64eb26b04db23b7862, type: 2}
   cpOn: {fileID: 2100000, guid: 005c4cc5a43c2b14f9a70b15adace551, type: 2}
+  checkSound: {fileID: 8300000, guid: 4aa1143e2ee54e048ab425832a26d68d, type: 3}
 --- !u!65 &769371061
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4750,7 +4753,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 1.02e-43, y: 5.6e-44, z: 6.617e-42, w: 1.435e-42}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -6573,6 +6576,7 @@ MonoBehaviour:
   theRend: {fileID: 1582507199}
   cpOff: {fileID: 2100000, guid: 0458d1689298ff64eb26b04db23b7862, type: 2}
   cpOn: {fileID: 2100000, guid: 005c4cc5a43c2b14f9a70b15adace551, type: 2}
+  checkSound: {fileID: 8300000, guid: 4aa1143e2ee54e048ab425832a26d68d, type: 3}
 --- !u!65 &1582507198
 BoxCollider:
   m_ObjectHideFlags: 0

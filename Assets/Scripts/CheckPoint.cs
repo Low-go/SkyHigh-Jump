@@ -11,6 +11,9 @@ public class CheckPoint : MonoBehaviour
     public Material cpOff;
     public Material cpOn;
 
+    private bool clipOnce = false;
+    public AudioClip checkSound;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +49,12 @@ public class CheckPoint : MonoBehaviour
             Vector3 spawnPoint = new Vector3(transform.position.x, transform.position.y + 3, transform.position.z);
             theHealhMan.SetSpawnPoint(spawnPoint);
             CheckPointOn();
+
+            if (!clipOnce)
+            {
+                AudioSource.PlayClipAtPoint(checkSound, transform.position);
+                clipOnce = true; ;
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ public class GoldPickup : MonoBehaviour
 {
 
     public int value;
+    public AudioClip coinSound;
 
     public GameObject pickupEffect;
     // Start is called before the first frame update
@@ -26,7 +27,10 @@ public class GoldPickup : MonoBehaviour
         {
             FindObjectOfType<GameManager>().AddGold(value);
 
+            AudioSource.PlayClipAtPoint(coinSound, transform.position);
+
             Instantiate(pickupEffect, transform.position, transform.rotation); // particle effect
+
 
             Destroy(gameObject);
         }

@@ -15,7 +15,7 @@ public class EnemyAiPatrol : MonoBehaviour
     public float sightRange = 10f;
     public float attackRange = 2f;
     public float waypointSettleTime = 3f;
-    public float playerDetectionAngle = 90f;
+    public float playerDetectionAngle = 180f;
 
     private Vector3 destPoint;
     private bool walkPointSet;
@@ -45,7 +45,10 @@ public class EnemyAiPatrol : MonoBehaviour
     void Update()
     {
         Collider[] playerInSight = Physics.OverlapSphere(transform.position, sightRange, playerLayer);
-        bool canSeePlayer = playerInSight.Length > 0 && IsPlayerInFieldOfView(playerInSight[0].transform);
+
+        // Ensure we have a player and check visibility
+        bool canSeePlayer = playerInSight.Length > 0 &&
+                            IsPlayerInFieldOfView(playerInSight[0].transform);
 
         bool isPlayerInAttackRange = playerInSight.Length > 0 &&
             Vector3.Distance(transform.position, playerInSight[0].transform.position) <= attackRange;
@@ -53,30 +56,35 @@ public class EnemyAiPatrol : MonoBehaviour
         switch (currentState)
         {
             case EnemyState.Patrolling:
+                // As soon as player is detected, switch to chasing
                 if (canSeePlayer)
                 {
                     currentState = EnemyState.Chasing;
                     currentTarget = playerInSight[0].transform;
+                    agent.speed = enemyChaseSpeed; // Immediately switch to chase speed
                     break;
                 }
                 PatrolBehavior();
                 break;
 
             case EnemyState.Chasing:
-                if (!canSeePlayer)
+                // More aggressive chasing logic
+                if (canSeePlayer)
                 {
-                    currentState = EnemyState.Patrolling;
-                    currentTarget = null;
-                    break;
+                    if (isPlayerInAttackRange)
+                    {
+                        currentState = EnemyState.Attacking;
+                    }
+                    else
+                    {
+                        ChaseBehavior(currentTarget);
+                    }
                 }
-
-                if (isPlayerInAttackRange)
+                else
                 {
-                    currentState = EnemyState.Attacking;
-                    break;
+                    // Keep chasing last known player position for a bit
+                    ChaseBehavior(currentTarget);
                 }
-
-                ChaseBehavior(currentTarget);
                 break;
 
             case EnemyState.Attacking:
@@ -97,8 +105,10 @@ public class EnemyAiPatrol : MonoBehaviour
         Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
         float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
+        // Increase the angle check and add more lenient line of sight check
         return angleToPlayer <= playerDetectionAngle / 2 &&
-               !Physics.Linecast(transform.position, playerTransform.position, groundLayer);
+               (!Physics.Linecast(transform.position, playerTransform.position, groundLayer) ||
+                Vector3.Distance(transform.position, playerTransform.position) < attackRange);
     }
 
     void PatrolBehavior()

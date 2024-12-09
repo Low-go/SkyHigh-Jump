@@ -231,7 +231,7 @@ MonoBehaviour:
   sightRange: 20
   attackRange: 2.3
   waypointSettleTime: 1.2
-  playerDetectionAngle: 90
+  playerDetectionAngle: 240
 --- !u!95 &3103159179046898644
 Animator:
   serializedVersion: 5
@@ -682,8 +682,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 0.20262271, y: 0.11253418, z: 0.011145356}
-  m_Center: {x: -0.01192238, y: -0.0006137107, z: 0.0029747428}
+  m_Size: {x: 0.2026227, y: 0.11253418, z: 0.02283437}
+  m_Center: {x: -0.012330905, y: -0.0010495958, z: 0.008819844}
 --- !u!1 &2022951820889502771
 GameObject:
   m_ObjectHideFlags: 0

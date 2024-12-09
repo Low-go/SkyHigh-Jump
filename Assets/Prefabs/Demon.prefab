@@ -228,7 +228,7 @@ MonoBehaviour:
   enemySpeed: 5
   enemyChaseSpeed: 18
   patrolRange: 13
-  sightRange: 12
+  sightRange: 20
   attackRange: 2.3
   waypointSettleTime: 1.2
   playerDetectionAngle: 90

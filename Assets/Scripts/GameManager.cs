@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -19,7 +20,27 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        remainingTime = startTime;
+        if (SceneManager.GetActiveScene().buildIndex > 1)
+        {
+            Debug.Log("In GameManager");
+            Debug.Log("Gold: " + MainManager.Instance.gold);
+            Debug.Log("Redo: " + MainManager.Instance.redo);
+            Debug.Log("Current Time: " + MainManager.Instance.time);
+
+            remainingTime = MainManager.Instance.time;
+            currentGold = MainManager.Instance.gold;
+            redoAmount = MainManager.Instance.redo;
+        }
+
+        if (remainingTime == 0)
+        {
+            remainingTime = startTime;
+        }
+
+        // Update the UI right after setting the values
+        goldText.text = "Gold: " + currentGold;
+        redoText.text = "Redo: " + redoAmount;
+
         StartCoroutine(CountdownTimer());
     }
 
@@ -68,4 +89,37 @@ public class GameManager : MonoBehaviour
         playerController.isGameOver = true;
         gameOverScreen.setup(currentGold, (int)remainingTime, redoAmount);
     }
+
+    //getter and setter methods for remaining time
+
+    public float getRemainingTime()
+    {
+        return remainingTime;
+    }
+
+    public void setRemainingTime(float value)
+    {
+        remainingTime = value;
+    }
+
+    //getter and setter methods for redoAmount
+
+    public int getRedo()
+    {
+        return redoAmount;
+    }
+
+    public void setRedo(int value)
+    {
+        redoAmount = value;
+    }
+
+    // for transitioning scenes or anything else
+    public void StopCountdownTimer()
+    {
+        // Stop the coroutine if it's running
+        StopAllCoroutines();
+    }
+
+
 }

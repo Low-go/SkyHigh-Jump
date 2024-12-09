@@ -3,79 +3,158 @@ using UnityEngine.AI;
 
 public class EnemyAiPatrol : MonoBehaviour
 {
-    GameObject player;
-    NavMeshAgent agent;
-    [SerializeField] LayerMask groundLayer, playerLayer;
-    Animator animator;
+    public NavMeshAgent agent;
+    public LayerMask groundLayer;
+    public LayerMask playerLayer;
+
     public BoxCollider handBoxCollider;
+
+    public float enemySpeed = 3.5f;
+    public float enemyChaseSpeed = 5f;
+    public float patrolRange = 10f;
+    public float sightRange = 10f;
+    public float attackRange = 2f;
+    public float waypointSettleTime = 3f;
+    public float playerDetectionAngle = 90f;
+
+    private Vector3 destPoint;
+    private bool walkPointSet;
+    private float waypointTimer;
     private int damageToGive = 1;
+    private Transform currentTarget;
+    private bool isAttacking;
 
-    [SerializeField] float enemySpeed = 3.5f;
-    [SerializeField] float enemyChaseSpeed = 5f;
+    Animator animator;
 
-    // patrol
-    Vector3 destPoint;
-    bool walkPointSet;
-    [SerializeField] float range;
-
-    // state change
-    [SerializeField] float sightRange, attackRange;
-    bool playerInSight, playerInAttackRange;
+    private enum EnemyState
+    {
+        Patrolling,
+        Chasing,
+        Attacking
+    }
+    private EnemyState currentState = EnemyState.Patrolling;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        agent.speed = enemySpeed;
-        player = GameObject.Find("Player");
         animator = GetComponent<Animator>();
+        agent.speed = enemySpeed;
+        agent.stoppingDistance = attackRange;
     }
 
     void Update()
     {
-        playerInSight = Physics.CheckSphere(transform.position, sightRange, playerLayer);
-        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, playerLayer);
+        Collider[] playerInSight = Physics.OverlapSphere(transform.position, sightRange, playerLayer);
+        bool canSeePlayer = playerInSight.Length > 0 && IsPlayerInFieldOfView(playerInSight[0].transform);
 
-        if (!playerInSight && !playerInAttackRange) Patrol();
-        if (playerInSight && !playerInAttackRange) Chase();
-        if (playerInSight && playerInAttackRange) Attack();
-    }
+        bool isPlayerInAttackRange = playerInSight.Length > 0 &&
+            Vector3.Distance(transform.position, playerInSight[0].transform.position) <= attackRange;
 
-    void Patrol()
-    {
-        agent.speed = enemySpeed;
-        if (!walkPointSet) SearchForDest();
-        if (walkPointSet) agent.SetDestination(destPoint);
-        if (Vector3.Distance(transform.position, destPoint) < 10) walkPointSet = false;
-    }
-
-    void SearchForDest()
-    {
-        float z = Random.Range(-range, range);
-        float x = Random.Range(-range, range);
-        destPoint = new Vector3(transform.position.x + x, transform.position.y, transform.position.z + z);
-        if (Physics.Raycast(destPoint, Vector3.down, groundLayer))
+        switch (currentState)
         {
+            case EnemyState.Patrolling:
+                if (canSeePlayer)
+                {
+                    currentState = EnemyState.Chasing;
+                    currentTarget = playerInSight[0].transform;
+                    break;
+                }
+                PatrolBehavior();
+                break;
+
+            case EnemyState.Chasing:
+                if (!canSeePlayer)
+                {
+                    currentState = EnemyState.Patrolling;
+                    currentTarget = null;
+                    break;
+                }
+
+                if (isPlayerInAttackRange)
+                {
+                    currentState = EnemyState.Attacking;
+                    break;
+                }
+
+                ChaseBehavior(currentTarget);
+                break;
+
+            case EnemyState.Attacking:
+                if (!isPlayerInAttackRange)
+                {
+                    currentState = EnemyState.Chasing;
+                    isAttacking = false;
+                    break;
+                }
+
+                AttackBehavior();
+                break;
+        }
+    }
+
+    bool IsPlayerInFieldOfView(Transform playerTransform)
+    {
+        Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
+        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+
+        return angleToPlayer <= playerDetectionAngle / 2 &&
+               !Physics.Linecast(transform.position, playerTransform.position, groundLayer);
+    }
+
+    void PatrolBehavior()
+    {
+        if (!walkPointSet)
+        {
+            SearchForDestination();
+        }
+        else
+        {
+            agent.SetDestination(destPoint);
+
+            waypointTimer += Time.deltaTime;
+            if (waypointTimer >= waypointSettleTime)
+            {
+                walkPointSet = false;
+                waypointTimer = 0;
+            }
+        }
+    }
+
+    void SearchForDestination()
+    {
+        float randomX = Random.Range(-patrolRange, patrolRange);
+        float randomZ = Random.Range(-patrolRange, patrolRange);
+
+        destPoint = new Vector3(
+            transform.position.x + randomX,
+            transform.position.y,
+            transform.position.z + randomZ
+        );
+
+        RaycastHit hit;
+        if (Physics.Raycast(destPoint, Vector3.down, out hit, 100f, groundLayer))
+        {
+            destPoint = hit.point;
             walkPointSet = true;
         }
     }
 
-    void Chase()
+    void ChaseBehavior(Transform playerTransform)
     {
         agent.speed = enemyChaseSpeed;
-        agent.SetDestination(player.transform.position);
+        agent.SetDestination(playerTransform.position);
     }
 
-    void Attack()
+    void AttackBehavior()
     {
-        agent.speed = enemySpeed; // Slow down during attack
-        //if (!animator.GetCurrentAnimatorStateInfo(0).IsName("AttackImadethis"))
-        //{
-        //    animator.SetTrigger("Attack");
-        //    agent.SetDestination(transform.position);
-        //}
-
-        animator.SetTrigger("Attack");
+        agent.speed = enemySpeed;
         agent.SetDestination(transform.position);
+
+        if (!isAttacking)
+        {
+            animator.SetTrigger("Attack");
+            isAttacking = true;
+        }
     }
 
     void EnableAttck()
@@ -86,20 +165,16 @@ public class EnemyAiPatrol : MonoBehaviour
     void DisableAttck()
     {
         handBoxCollider.enabled = false;
+        isAttacking = false;
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        Debug.Log("OnTriggerEnter called with: " + other.gameObject.name);
-        var player = other.GetComponent<PlayerController>();
-        Debug.Log("Player component found: " + (player != null));
+        PlayerController player = other.GetComponent<PlayerController>();
         if (player != null)
         {
-            Debug.Log("HIT");
-            Vector3 hitDirection = other.transform.position - transform.position;
-            hitDirection = hitDirection.normalized;
+            Vector3 hitDirection = (other.transform.position - transform.position).normalized;
             FindObjectOfType<HealthManager>().hurtPlayer(damageToGive, hitDirection);
         }
-
     }
 }

@@ -25,10 +25,14 @@ public class EnemyAIPatrol : MonoBehaviour
 
     Animator animator;
 
+    private float defaultSpeed; // Store the default speed
+    public float chasingSpeedMultiplier = 1.5f; // Speed multiplier for Chasing/Lingering
+
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        defaultSpeed = agent.speed; // Save default speed at the start
     }
 
     private void Update()
@@ -128,10 +132,8 @@ public class EnemyAIPatrol : MonoBehaviour
 
     private void AttackPlayer()
     {
-        // Stop moving while attacking
         agent.SetDestination(transform.position);
 
-        // If not already attacking, trigger the attack animation
         if (!isAttacking)
         {
             animator.SetTrigger("Attack");
@@ -168,7 +170,17 @@ public class EnemyAIPatrol : MonoBehaviour
 
     private void SwitchState(State newState)
     {
+        if (newState == State.Chasing || newState == State.Lingering)
+        {
+            agent.speed = defaultSpeed * chasingSpeedMultiplier; // Increase speed
+        }
+        else
+        {
+            agent.speed = defaultSpeed; // Reset to default speed
+        }
+
         currentState = newState;
+
         if (newState == State.Attacking || newState == State.Chasing)
         {
             agent.ResetPath(); // Stop wandering
@@ -181,4 +193,3 @@ public class EnemyAIPatrol : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, sightRange);
     }
 }
-

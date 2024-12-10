@@ -40,6 +40,7 @@ public class GameOver : MonoBehaviour
     public void RestartButton()
     {
         Debug.Log("Restart Button Pressed!");
+        MainManager.Instance.ResetToInitialHealth(); // Reset health here
         PlayerController playerController = FindObjectOfType<PlayerController>();
         playerController.isGameOver = false;
 

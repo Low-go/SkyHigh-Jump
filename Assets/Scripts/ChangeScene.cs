@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class ChangeScene : MonoBehaviour
 {
+
+
     private void OnTriggerEnter(Collider other)
     {
         GameManager currentGameManager = FindObjectOfType<GameManager>();

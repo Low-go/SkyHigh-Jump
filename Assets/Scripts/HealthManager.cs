@@ -39,6 +39,9 @@ public class HealthManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LoadHealthFromMainManager();
+
+
         maxHealth = MainManager.Instance.playerHealth;
         currentHealth = maxHealth;
         //thePlayer = FindObjectOfType<PlayerController>();
@@ -182,6 +185,7 @@ public class HealthManager : MonoBehaviour
         if (!withHealth)
         {
             currentHealth = maxHealth;
+            ResetHealth();
         }
 
 
@@ -207,5 +211,23 @@ public class HealthManager : MonoBehaviour
     public void SetSpawnPoint(Vector3 newPosition)
     {
         respawnPoint = newPosition; // change respawn points in the world. 
+    }
+
+    public void LoadHealthFromMainManager()
+    {
+        maxHealth = MainManager.Instance.playerHealth;
+        currentHealth = maxHealth;
+    }
+
+    public void SaveHealthToMainManager()
+    {
+        MainManager.Instance.playerHealth = currentHealth;
+        Debug.Log(currentHealth);
+    }
+
+    public void ResetHealth()
+    {
+        maxHealth = MainManager.Instance.initialPlayerHealth;
+        currentHealth = maxHealth;
     }
 }

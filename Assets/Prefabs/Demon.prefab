@@ -224,14 +224,13 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
-  handBoxCollider: {fileID: 849733735607605152}
-  enemySpeed: 5
-  enemyChaseSpeed: 18
-  patrolRange: 13
+  wanderRadius: 10
   sightRange: 20
   attackRange: 2.3
-  waypointSettleTime: 1.2
-  playerDetectionAngle: 240
+  lingerTime: 3
+  detectionAngle: 200
+  handBoxCollider: {fileID: 849733735607605152}
+  chasingSpeedMultiplier: 3.5
 --- !u!95 &3103159179046898644
 Animator:
   serializedVersion: 5

@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     private float remainingTime;
     private int redoAmount = 0;
     public GameOver gameOverScreen;
+    public bool gameOver = false;
 
 
     // Start is called before the first frame update
@@ -58,7 +59,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator CountdownTimer()
     {
-        while (remainingTime > 0) { 
+        while (remainingTime > 0 && gameOver == false) { 
             
             int minutes = Mathf.FloorToInt(remainingTime / 60);
             int seconds = Mathf.FloorToInt(remainingTime % 60);

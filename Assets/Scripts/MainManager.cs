@@ -8,6 +8,7 @@ public class MainManager : MonoBehaviour
     public float time;
     public int gold;
     public int redo;
+    public int initialPlayerHealth;
     //private GameObject player;
 
 
@@ -35,6 +36,7 @@ public class MainManager : MonoBehaviour
     public void SetPlayerHealth(float healthValue)
     {
         playerHealth = Mathf.RoundToInt(healthValue);  // Convert slider value to integer
+        initialPlayerHealth = playerHealth; // store it
     }
 
 
@@ -44,7 +46,13 @@ public class MainManager : MonoBehaviour
         time = currentGameManager.getRemainingTime();
         gold = currentGameManager.currentGold;
         redo = currentGameManager.getRedo();
-        
+
+        HealthManager healthManager = FindObjectOfType<HealthManager>();
+        if (healthManager != null)
+        {
+            healthManager.SaveHealthToMainManager();
+        }
+
 
         Debug.Log("Current Time: " + time);
         Debug.Log("Current Gold: " + gold);
@@ -61,13 +69,10 @@ public class MainManager : MonoBehaviour
         //PrepareGameManagerForNextScene(currentGameManager);
     }
 
-    // Method to set up GameManager for the next scene
-    //private void PrepareGameManagerForNextScene(GameManager gameManager)
-    //{
-    //    // Set all transferred values in GameManager
-    //    gameManager.setRemainingTime(time);
-    //    gameManager.currentGold = gold;
-    //    gameManager.setRedo(redo);
-    //}
+    public void ResetToInitialHealth()
+    {
+        playerHealth = initialPlayerHealth; // Reset to initial value
+    }
+
 
 }

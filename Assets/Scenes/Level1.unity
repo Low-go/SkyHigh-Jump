@@ -5570,7 +5570,7 @@ MonoBehaviour:
   goldText: {fileID: 1694094438}
   timeText: {fileID: 59528458}
   redoText: {fileID: 1224809377}
-  startTime: 180
+  startTime: 60
   gameOverScreen: {fileID: 790982530}
 --- !u!4 &718562363
 Transform:

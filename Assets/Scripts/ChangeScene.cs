@@ -11,6 +11,7 @@ public class ChangeScene : MonoBehaviour
         currentGameManager.StopCountdownTimer();
         MainManager.Instance.ProgressToNextScene(currentGameManager);
 
-        SceneManager.LoadScene(2);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex + 1);
     }
 }

@@ -40,14 +40,41 @@ public class GameOver : MonoBehaviour
     public void RestartButton()
     {
         Debug.Log("Restart Button Pressed!");
-        MainManager.Instance.ResetToInitialHealth(); // Reset health here
+
+        // Check if MainManager.Instance is null
+        if (MainManager.Instance == null)
+        {
+            Debug.LogError("MainManager.Instance is null! Ensure it is initialized before calling RestartButton.");
+            return;
+        }
+        MainManager.Instance.ResetToInitialHealth();
+
+        // Check if PlayerController exists
         PlayerController playerController = FindObjectOfType<PlayerController>();
+        if (playerController == null)
+        {
+            Debug.LogError("PlayerController not found! Ensure a PlayerController exists in the scene.");
+            return;
+        }
         playerController.isGameOver = false;
+
+        // Log restartButton and exitButton status
+        if (restartButton == null)
+        {
+            Debug.LogError("RestartButton is null! Make sure it is assigned in the inspector.");
+            return;
+        }
+        if (exitButton == null)
+        {
+            Debug.LogError("ExitButton is null! Make sure it is assigned in the inspector.");
+            return;
+        }
 
         restartButton.SetActive(false);
         exitButton.SetActive(false);
 
-        SceneManager.LoadScene(1); // I think an index is ok
+        Debug.Log("Loading Scene 1...");
+        SceneManager.LoadScene(1);
     }
 
     public void ExitButton()

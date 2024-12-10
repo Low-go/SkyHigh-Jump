@@ -1,165 +1,137 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyAiPatrol : MonoBehaviour
+public class EnemyAIPatrol : MonoBehaviour
 {
     public NavMeshAgent agent;
-    public LayerMask groundLayer;
-    public LayerMask playerLayer;
+    public LayerMask groundLayer, playerLayer;
+    public float wanderRadius = 10f;
+    public float sightRange = 15f;
+    public float attackRange = 2f;
+    public float lingerTime = 3f;
+    public float detectionAngle = 200f;
+
+    private Vector3 lastKnownPosition;
+    private bool playerInSight;
+    private bool isLingering;
+    private Transform player;
+    private int damageToGive = 1;
+
+    private enum State { Wandering, Chasing, Lingering, Attacking }
+    private State currentState = State.Wandering;
 
     public BoxCollider handBoxCollider;
-
-    public float enemySpeed = 3.5f;
-    public float enemyChaseSpeed = 5f;
-    public float patrolRange = 10f;
-    public float sightRange = 10f;
-    public float attackRange = 2f;
-    public float waypointSettleTime = 3f;
-    public float playerDetectionAngle = 180f;
-
-    private Vector3 destPoint;
-    private bool walkPointSet;
-    private float waypointTimer;
-    private int damageToGive = 1;
-    private Transform currentTarget;
     private bool isAttacking;
 
     Animator animator;
 
-    private enum EnemyState
-    {
-        Patrolling,
-        Chasing,
-        Attacking
-    }
-    private EnemyState currentState = EnemyState.Patrolling;
-
-    void Start()
+    private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        agent.speed = enemySpeed;
-        agent.stoppingDistance = attackRange;
     }
 
-    void Update()
+    private void Update()
     {
-        Collider[] playerInSight = Physics.OverlapSphere(transform.position, sightRange, playerLayer);
-
-        // Ensure we have a player and check visibility
-        bool canSeePlayer = playerInSight.Length > 0 &&
-                            IsPlayerInFieldOfView(playerInSight[0].transform);
-
-        bool isPlayerInAttackRange = playerInSight.Length > 0 &&
-            Vector3.Distance(transform.position, playerInSight[0].transform.position) <= attackRange;
+        DetectPlayer();
 
         switch (currentState)
         {
-            case EnemyState.Patrolling:
-                // As soon as player is detected, switch to chasing
-                if (canSeePlayer)
+            case State.Wandering:
+                Wander();
+                if (playerInSight)
                 {
-                    currentState = EnemyState.Chasing;
-                    currentTarget = playerInSight[0].transform;
-                    agent.speed = enemyChaseSpeed; // Immediately switch to chase speed
-                    break;
-                }
-                PatrolBehavior();
-                break;
-
-            case EnemyState.Chasing:
-                // More aggressive chasing logic
-                if (canSeePlayer)
-                {
-                    if (isPlayerInAttackRange)
-                    {
-                        currentState = EnemyState.Attacking;
-                    }
-                    else
-                    {
-                        ChaseBehavior(currentTarget);
-                    }
-                }
-                else
-                {
-                    // Keep chasing last known player position for a bit
-                    ChaseBehavior(currentTarget);
+                    SwitchState(State.Chasing);
                 }
                 break;
 
-            case EnemyState.Attacking:
-                if (!isPlayerInAttackRange)
+            case State.Chasing:
+                ChasePlayer();
+                if (!playerInSight)
                 {
-                    currentState = EnemyState.Chasing;
-                    isAttacking = false;
-                    break;
+                    lastKnownPosition = player.position;
+                    SwitchState(State.Lingering);
                 }
+                break;
 
-                AttackBehavior();
+            case State.Lingering:
+                Linger();
+                break;
+
+            case State.Attacking:
+                AttackPlayer();
+                if (!playerInSight || Vector3.Distance(transform.position, player.position) > attackRange)
+                {
+                    SwitchState(State.Chasing);
+                }
                 break;
         }
     }
 
-    bool IsPlayerInFieldOfView(Transform playerTransform)
+    private void DetectPlayer()
     {
-        Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
-        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
-
-        // Increase the angle check and add more lenient line of sight check
-        return angleToPlayer <= playerDetectionAngle / 2 &&
-               (!Physics.Linecast(transform.position, playerTransform.position, groundLayer) ||
-                Vector3.Distance(transform.position, playerTransform.position) < attackRange);
-    }
-
-    void PatrolBehavior()
-    {
-        if (!walkPointSet)
+        Collider[] hits = Physics.OverlapSphere(transform.position, sightRange, playerLayer);
+        if (hits.Length > 0)
         {
-            SearchForDestination();
-        }
-        else
-        {
-            agent.SetDestination(destPoint);
+            Transform target = hits[0].transform;
+            Vector3 directionToPlayer = (target.position - transform.position).normalized;
+            float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
-            waypointTimer += Time.deltaTime;
-            if (waypointTimer >= waypointSettleTime)
+            if (angleToPlayer <= detectionAngle / 2 && !Physics.Linecast(transform.position, target.position, groundLayer))
             {
-                walkPointSet = false;
-                waypointTimer = 0;
+                playerInSight = true;
+                player = target;
+                return;
+            }
+        }
+
+        playerInSight = false;
+    }
+
+    private void Wander()
+    {
+        if (!agent.hasPath)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;
+            randomDirection += transform.position;
+
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomDirection, out hit, wanderRadius, 1))
+            {
+                agent.SetDestination(hit.position);
             }
         }
     }
 
-    void SearchForDestination()
+    private void ChasePlayer()
     {
-        float randomX = Random.Range(-patrolRange, patrolRange);
-        float randomZ = Random.Range(-patrolRange, patrolRange);
-
-        destPoint = new Vector3(
-            transform.position.x + randomX,
-            transform.position.y,
-            transform.position.z + randomZ
-        );
-
-        RaycastHit hit;
-        if (Physics.Raycast(destPoint, Vector3.down, out hit, 100f, groundLayer))
+        if (playerInSight)
         {
-            destPoint = hit.point;
-            walkPointSet = true;
+            agent.SetDestination(player.position);
+
+            if (Vector3.Distance(transform.position, player.position) <= attackRange)
+            {
+                SwitchState(State.Attacking);
+            }
         }
     }
 
-    void ChaseBehavior(Transform playerTransform)
+    private void Linger()
     {
-        agent.speed = enemyChaseSpeed;
-        agent.SetDestination(playerTransform.position);
+        if (!isLingering)
+        {
+            isLingering = true;
+            agent.SetDestination(lastKnownPosition);
+            Invoke(nameof(ResumeWandering), lingerTime);
+        }
     }
 
-    void AttackBehavior()
+    private void AttackPlayer()
     {
-        agent.speed = enemySpeed;
+        // Stop moving while attacking
         agent.SetDestination(transform.position);
 
+        // If not already attacking, trigger the attack animation
         if (!isAttacking)
         {
             animator.SetTrigger("Attack");
@@ -167,18 +139,18 @@ public class EnemyAiPatrol : MonoBehaviour
         }
     }
 
-    void EnableAttck()
+    public void EnableAttck()
     {
         handBoxCollider.enabled = true;
     }
 
-    void DisableAttck()
+    public void DisableAttck()
     {
         handBoxCollider.enabled = false;
         isAttacking = false;
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         PlayerController player = other.GetComponent<PlayerController>();
         if (player != null)
@@ -187,4 +159,26 @@ public class EnemyAiPatrol : MonoBehaviour
             FindObjectOfType<HealthManager>().hurtPlayer(damageToGive, hitDirection);
         }
     }
+
+    private void ResumeWandering()
+    {
+        isLingering = false;
+        SwitchState(State.Wandering);
+    }
+
+    private void SwitchState(State newState)
+    {
+        currentState = newState;
+        if (newState == State.Attacking || newState == State.Chasing)
+        {
+            agent.ResetPath(); // Stop wandering
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, sightRange);
+    }
 }
+
